@@ -4,6 +4,6 @@
   "private": true,
   "scripts": {
     "build": "cd Portfolio && npm ci && npm run build",
-    "start": "cd Portfolio && npm run start"
+    "start": "npx serve Portfolio/dist -l ${PORT:-4173}"
   }
 }
