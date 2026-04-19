@@ -513,7 +513,6 @@ const Experience = () => {
         width: "100%", 
         height: "100%",
         display: "flex",
-        zIndex: 3,
         alignItems: "center",
         boxSizing: "border-box",
         zIndex: 10,
