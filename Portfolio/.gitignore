@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Temporarily excluded large videos (>25MB, exceed Cloudflare Pages limit)
+public/assets/Design&3D/220624-PlayconAdvertisement.mp4
+public/assets/Design&3D/Final Car Render.mp4

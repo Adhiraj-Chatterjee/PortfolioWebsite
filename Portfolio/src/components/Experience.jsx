@@ -228,8 +228,9 @@ const Experience = () => {
     { title: "Path Finder", file: "/assets/Design&3D/PathFinder.jpg", software: ["Blender", "Photoshop"], desc: "A sci-fi mechanical concept render. Placeholder description goes here." },
     { title: "Extroyer", file: "/assets/Design&3D/Extroyer.png", software: ["Blender", "Photoshop"], desc: "A stylized character concept. Placeholder description goes here." },
     { title: "Sahotsava Logo Reveal", file: "/assets/Design&3D/logorevealForSahotsava.mp4", software: ["Blender", "PremierePro"], desc: "An epic 3D logo animation. Placeholder description goes here." },
-    { title: "Playcon Advertisement", file: "/assets/Design&3D/220624-PlayconAdvertisement.mp4", software: ["Blender", "PremierePro", "AfterEffects"], desc: "Commercial spot for Playcon. Placeholder description goes here." },
-    { title: "Final Car Render", file: "/assets/Design&3D/Final Car Render.mp4", software: ["Blender", "PremierePro"], desc: "High-fidelity automotive render. Placeholder description goes here." },
+    // TEMPORARILY EXCLUDED — videos exceed 25MB Cloudflare Pages limit. Re-add after compressing below 25MB.
+    // { title: "Playcon Advertisement", file: "/assets/Design&3D/220624-PlayconAdvertisement.mp4", software: ["Blender", "PremierePro", "AfterEffects"], desc: "Commercial spot for Playcon. Placeholder description goes here." },
+    // { title: "Final Car Render", file: "/assets/Design&3D/Final Car Render.mp4", software: ["Blender", "PremierePro"], desc: "High-fidelity automotive render. Placeholder description goes here." },
     { title: "Transformer Head", file: "/assets/Design&3D/TransformerHead.mp4", software: ["Blender"], desc: "Complex hard-surface modeling. Placeholder description goes here." },
     { title: "Godrej Classroom Edit", file: "/assets/Design&3D/GodrejClassroomEdit.mp4", software: ["Blender", "PremierePro"], desc: "Architectural visualization snippet. Placeholder description goes here." },
     { title: "Suited Monster", file: "/assets/Design&3D/SuitedMonster.png", software: ["Blender"], desc: "Character modeling and posing. Placeholder description goes here." },
