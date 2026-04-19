@@ -5,7 +5,7 @@ import * as THREE from "three";
 import { gsap } from "gsap";
 import TableScene from "./TableScene";
 import Hero3D from "./Hero3D";
-import { useControls } from "leva";
+import { useControls, Leva } from "leva";
 
 // --- SHADER DEFINITION ---
 const TransitionShader = {
@@ -403,6 +403,7 @@ const Experience = () => {
       background: "radial-gradient(ellipse at 50% 50%, #2b2b44 0%, #0f0f15 50%, #050505 100%)", // Lighter premium core
       overflow: "hidden"
     }}>
+      <Leva hidden />
 
       {/* --- LAYER 1: 3D CANVAS (Behind Strips) --- */}
       <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", zIndex: 1 }}>
