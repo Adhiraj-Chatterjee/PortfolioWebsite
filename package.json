@@ -4,6 +4,11 @@
   "private": true,
   "scripts": {
     "build": "cd Portfolio && npm ci && npm run build",
-    "start": "npx serve Portfolio/dist -l ${PORT:-4173}"
+    "start": "npx serve Portfolio/dist -l ${PORT:-4173}",
+    "deploy": "wrangler deploy",
+    "preview": "wrangler dev"
+  },
+  "devDependencies": {
+    "wrangler": "^4.83.0"
   }
 }
