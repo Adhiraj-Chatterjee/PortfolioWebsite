@@ -503,6 +503,28 @@ const Experience = () => {
               </div>
             ))}
           </div>
+
+          {/* Scroll Indicator Box */}
+          <div style={{
+            ...glassStyle,
+            position: "absolute",
+            bottom: "0px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            padding: "10px 24px",
+            borderRadius: "30px",
+            fontSize: "0.85rem",
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+            pointerEvents: "none",
+            animation: "pulse 2s infinite cubic-bezier(0.4, 0, 0.6, 1)"
+          }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 5v14M19 12l-7 7-7-7"/>
+            </svg>
+            Scroll to view next
+          </div>
         </div>
       </div>
 
