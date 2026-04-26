@@ -62,9 +62,9 @@ const TransitionRenderer = ({ progress, projectIndex }) => {
   const sceneTable = useMemo(() => new THREE.Scene(), []);
 
   // 3. Isolated cameras
-  const tablePos      = useMemo(() => new THREE.Vector3(-1.14, -0.61, 1.75), []); // rest position
-  const tableStartPos = useMemo(() => new THREE.Vector3(-1.14,  0.0,  3.5),  []); // entry start (zoomed out, but lower to avoid void)
-  const tableTarget   = useMemo(() => new THREE.Vector3(-0.87, -0.86, 0.65), []);
+  const tablePos = useMemo(() => new THREE.Vector3(-1.14, -0.61, 1.75), []); // rest position
+  const tableStartPos = useMemo(() => new THREE.Vector3(-1.14, 0.0, 3.5), []); // entry start (zoomed out, but lower to avoid void)
+  const tableTarget = useMemo(() => new THREE.Vector3(-0.87, -0.86, 0.65), []);
 
   const camTable = useMemo(() => {
     const c = new THREE.PerspectiveCamera(30, size.width / size.height, 0.1, 1000);
@@ -110,7 +110,7 @@ const TransitionRenderer = ({ progress, projectIndex }) => {
   useEffect(() => {
     const onMove = (e) => {
       // Normalize to -1..+1 same as R3F state.pointer
-      globalMouse.current.x =  (e.clientX / window.innerWidth)  * 2 - 1;
+      globalMouse.current.x = (e.clientX / window.innerWidth) * 2 - 1;
       globalMouse.current.y = -((e.clientY / window.innerHeight) * 2 - 1); // flip Y
     };
     window.addEventListener('mousemove', onMove);
@@ -130,11 +130,11 @@ const TransitionRenderer = ({ progress, projectIndex }) => {
 
     // Advance entry timer
     entryTimer.current += dt;
-    const DELAY    = 0.0;
+    const DELAY = 0.0;
     const DURATION = 2.5;
     const t = Math.max(0, Math.min((entryTimer.current - DELAY) / DURATION, 1));
     // power3.inOut easing
-    const eased = t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2;
+    const eased = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
     const baseX = THREE.MathUtils.lerp(tableStartPos.x, tablePos.x, eased);
     const baseY = THREE.MathUtils.lerp(tableStartPos.y, tablePos.y, eased);
@@ -212,55 +212,55 @@ const Experience = () => {
 
   // 13 assets with software metadata
   const designProjects = [
-    { title: "Dream Sequence", file: "/assets/Design&3D/DreamSequence.mp4", software: ["Blender", "PremierePro"], desc: "A narrative cutscene animation. Placeholder description goes here." },
-    { title: "Path Finder", file: "/assets/Design&3D/PathFinder.jpg", software: ["Blender", "Photoshop"], desc: "A sci-fi mechanical concept render. Placeholder description goes here." },
-    { title: "Extroyer", file: "/assets/Design&3D/Extroyer.png", software: ["Blender", "Photoshop"], desc: "A stylized character concept. Placeholder description goes here." },
-    { title: "Sahotsava Logo Reveal", file: "/assets/Design&3D/logorevealForSahotsava.mp4", software: ["Blender", "PremierePro"], desc: "An epic 3D logo animation. Placeholder description goes here." },
+    { title: "Dream Sequence", file: "/assets/Design&3D/DreamSequence.mp4", software: ["Blender", "PremierePro"], desc: "A narrative cutscene animation. Made for the youtuber pwnisher's dream secquence challenge" },
+    { title: "Path Finder", file: "/assets/Design&3D/PathFinder.jpg", software: ["Blender", "Photoshop"], desc: "A sci-fi hardsurface mechanical creature render" },
+    { title: "Extroyer", file: "/assets/Design&3D/Extroyer.png", software: ["Blender", "Photoshop"], desc: "A game ready hardsurface mech model with full UV's and baked textures" },
+    { title: "Sahotsava Logo Reveal", file: "/assets/Design&3D/logorevealForSahotsava.mp4", software: ["Blender", "PremierePro"], desc: "An intro animation for the Techno Sahotsava Fest" },
     // TEMPORARILY EXCLUDED — videos exceed 25MB Cloudflare Pages limit. Re-add after compressing below 25MB.
     // { title: "Playcon Advertisement", file: "/assets/Design&3D/220624-PlayconAdvertisement.mp4", software: ["Blender", "PremierePro", "AfterEffects"], desc: "Commercial spot for Playcon. Placeholder description goes here." },
     // { title: "Final Car Render", file: "/assets/Design&3D/Final Car Render.mp4", software: ["Blender", "PremierePro"], desc: "High-fidelity automotive render. Placeholder description goes here." },
-    { title: "Transformer Head", file: "/assets/Design&3D/TransformerHead.mp4", software: ["Blender"], desc: "Complex hard-surface modeling. Placeholder description goes here." },
-    { title: "Godrej Classroom Edit", file: "/assets/Design&3D/GodrejClassroomEdit.mp4", software: ["Blender", "PremierePro"], desc: "Architectural visualization snippet. Placeholder description goes here." },
-    { title: "Suited Monster", file: "/assets/Design&3D/SuitedMonster.png", software: ["Blender"], desc: "Character modeling and posing. Placeholder description goes here." },
-    { title: "R.S Entreprize Poster", file: "/assets/Design&3D/R.S Entreprize new year poster.png", software: ["Photoshop"], desc: "Graphic design marketing material. Placeholder description goes here." },
-    { title: "Saraswati Poster", file: "/assets/Design&3D/SaraswatiPoster.png", software: ["Photoshop"], desc: "Cultural event graphic design. Placeholder description goes here." },
-    { title: "Dance Battle Cypher", file: "/assets/Design&3D/DanceBattleCypher2.png", software: ["Photoshop"], desc: "High-energy event poster design. Placeholder description goes here." },
-    { title: "Echostorm", file: "/assets/Design&3D/Echostorm3.png", software: ["Blender", "Photoshop"], desc: "Futuristic visual concept art. Placeholder description goes here." }
+    { title: "Transformer Head", file: "/assets/Design&3D/TransformerHead.mp4", software: ["Blender"], desc: "Complex hard-surface modeling + animation." },
+    { title: "Godrej Classroom Edit", file: "/assets/Design&3D/GodrejClassroomEdit.mp4", software: ["Blender", "PremierePro"], desc: "classroom interior design showcase" },
+    { title: "Suited Monster", file: "/assets/Design&3D/SuitedMonster.png", software: ["Blender"], desc: "Character modeling and posing." },
+    { title: "R.S Entreprize Poster", file: "/assets/Design&3D/R.S Entreprize new year poster.png", software: ["Photoshop"], desc: "Graphic design marketing material." },
+    { title: "Saraswati Poster", file: "/assets/Design&3D/SaraswatiPoster.png", software: ["Photoshop"], desc: "Cultural event poster design." },
+    { title: "Dance Battle Cypher", file: "/assets/Design&3D/DanceBattleCypher2.png", software: ["Photoshop"], desc: "High-energy event poster design." },
+    { title: "Echostorm", file: "/assets/Design&3D/Echostorm3.png", software: ["Blender", "Photoshop"], desc: "Digital music contest poster design." }
   ];
 
   const codingProjects = [
-    { 
-      title: "LeetCode", 
-      file: "/assets/coding_profiles/Leetcode.png", 
-      url: "https://leetcode.com/u/Barry_Code/", 
+    {
+      title: "LeetCode",
+      file: "/assets/coding_profiles/Leetcode.png",
+      url: "https://leetcode.com/u/Barry_Code/",
       software: ["LeetCode"],
-      desc: "Competitive programming and algorithm practice profile." 
+      desc: "Solved 200+ problems. Advanced Data Structures and Algorithms."
     },
-    { 
-      title: "Codeforces", 
-      file: "/assets/coding_profiles/CodeForces.png", 
-      url: "https://codeforces.com/profile/AdhirajChatterjee", 
+    {
+      title: "Codeforces",
+      file: "/assets/coding_profiles/CodeForces.png",
+      url: "https://codeforces.com/profile/AdhirajChatterjee",
       software: ["Codeforces"],
-      desc: "Competitive coding profile on Codeforces." 
+      desc: "Novice rated competitive programmer."
     },
-    { 
-      title: "LinkedIn", 
-      file: "/assets/coding_profiles/LinkedIn.png", 
-      url: "https://www.linkedin.com/in/adhiraj-chatterjee-360686381/", 
+    {
+      title: "LinkedIn",
+      file: "/assets/coding_profiles/LinkedIn.png",
+      url: "https://www.linkedin.com/in/adhiraj-chatterjee-360686381/",
       software: ["LinkedIn"],
-      desc: "Professional networking and industry connections." 
+      desc: "Professional networking and industry connections."
     },
-    { 
-      title: "Monkeytype", 
-      file: "/assets/coding_profiles/Monkeytype.png", 
-      url: "https://monkeytype.com/profile/BarryCode", 
+    {
+      title: "Monkeytype",
+      file: "/assets/coding_profiles/Monkeytype.png",
+      url: "https://monkeytype.com/profile/BarryCode",
       software: ["Monkeytype"],
-      desc: "Typing speed and accuracy practice profile." 
+      desc: "Can type over 150 words per minute."
     }
   ];
 
   const fullProjectList = [...designProjects, ...codingProjects];
-  
+
   // Derived state: activeCategory is based on the projectIndex
   const activeCategory = projectIndex < designProjects.length ? 0 : 1;
 
@@ -277,8 +277,8 @@ const Experience = () => {
 
     if (isSkills) {
       gsap.to(introPanelRef.current, { x: "150%", opacity: 0, duration: 1.2, ease: "power3.inOut" });
-      gsap.fromTo(navPanelRef.current, 
-        { x: "-150%", opacity: 0, display: "none" }, 
+      gsap.fromTo(navPanelRef.current,
+        { x: "-150%", opacity: 0, display: "none" },
         { x: "0%", opacity: 1, display: "flex", duration: 1.2, ease: "power3.out", delay: 0.6 }
       );
       // Entrance animations for the three strips
@@ -296,9 +296,11 @@ const Experience = () => {
       );
     } else {
       gsap.to(introPanelRef.current, { x: "0%", opacity: 1, duration: 1.2, ease: "power3.out", delay: 0.6 });
-      gsap.to(navPanelRef.current, { x: "-150%", opacity: 0, duration: 1.2, ease: "power3.inOut", onComplete: () => {
-         if (navPanelRef.current) navPanelRef.current.style.display = 'none';
-      }});
+      gsap.to(navPanelRef.current, {
+        x: "-150%", opacity: 0, duration: 1.2, ease: "power3.inOut", onComplete: () => {
+          if (navPanelRef.current) navPanelRef.current.style.display = 'none';
+        }
+      });
       // Exit animations for the three strips
       gsap.to(descStripRef.current, { y: "-100vh", opacity: 0, duration: 0.8, ease: "power3.inOut" });
       gsap.to(mediaStripRef.current, { y: "100vh", opacity: 0, duration: 0.8, ease: "power3.inOut" });
@@ -312,13 +314,13 @@ const Experience = () => {
 
     const handleWheel = (e) => {
       if (scrollCooldown.current) return;
-      
+
       if (e.deltaY > 0) {
         setProjectIndex((prev) => Math.min(prev + 1, fullProjectList.length - 1));
       } else if (e.deltaY < 0) {
         setProjectIndex((prev) => Math.max(prev - 1, 0));
       }
-      
+
       scrollCooldown.current = true;
       setTimeout(() => {
         scrollCooldown.current = false;
@@ -382,11 +384,11 @@ const Experience = () => {
   };
 
   return (
-    <div style={{ 
-      width: "100vw", 
-      height: "100vh", 
-      position: "fixed", 
-      top: 0, 
+    <div style={{
+      width: "100vw",
+      height: "100vh",
+      position: "fixed",
+      top: 0,
       left: 0,
       background: "radial-gradient(ellipse at 50% 50%, #2b2b44 0%, #0f0f15 50%, #050505 100%)", // Lighter premium core
       overflow: "hidden"
@@ -429,13 +431,13 @@ const Experience = () => {
                 <div style={{ ...glassStyle, position: "relative", padding: "20px 40px", pointerEvents: "none", zIndex: 2 }}>
                   <h2 style={{ fontSize: "2rem", margin: "0 0 10px 0", fontFamily: "'Outfit', sans-serif" }}>{proj.title}</h2>
                   <p style={{ fontSize: "1.1rem", margin: "0 0 15px 0", color: "rgba(255,255,255,0.8)", fontFamily: "'Inter', sans-serif" }}>{proj.desc}</p>
-                  
+
                   {activeCategory === 1 && proj.url && (
-                    <a 
-                      href={proj.url} 
-                      target="_blank" 
+                    <a
+                      href={proj.url}
+                      target="_blank"
                       rel="noopener noreferrer"
-                      style={{ 
+                      style={{
                         display: "inline-block",
                         padding: "8px 20px",
                         background: "rgba(255,255,255,0.1)",
@@ -483,9 +485,9 @@ const Experience = () => {
                 {proj.file.endsWith(".mp4") ? (
                   <video src={proj.file} autoPlay loop muted playsInline style={{ maxHeight: "90%", maxWidth: "100%", borderRadius: "12px", boxShadow: "0 25px 50px rgba(0,0,0,0.8)" }} />
                 ) : (
-                  <img 
-                    src={proj.file} 
-                    style={{ maxHeight: "90%", maxWidth: "100%", borderRadius: "12px", boxShadow: "0 25px 50px rgba(0,0,0,0.8)", objectFit: "contain" }} 
+                  <img
+                    src={proj.file}
+                    style={{ maxHeight: "90%", maxWidth: "100%", borderRadius: "12px", boxShadow: "0 25px 50px rgba(0,0,0,0.8)", objectFit: "contain" }}
                   />
                 )}
               </div>
@@ -509,7 +511,7 @@ const Experience = () => {
             animation: "pulse 2s infinite cubic-bezier(0.4, 0, 0.6, 1)"
           }}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 5v14M19 12l-7 7-7-7"/>
+              <path d="M12 5v14M19 12l-7 7-7-7" />
             </svg>
             Scroll to view next
           </div>
@@ -520,8 +522,8 @@ const Experience = () => {
       <div style={{
         position: "absolute",
         top: 0,
-        left: 0, 
-        width: "100%", 
+        left: 0,
+        width: "100%",
         height: "100%",
         display: "flex",
         alignItems: "center",
@@ -530,7 +532,7 @@ const Experience = () => {
         pointerEvents: "none",
         overflowX: "hidden" // ensures sliding panels don't create horizontal scrollbars
       }}>
-        
+
         {/* PANEL 1: Intro Panel */}
         <div ref={introPanelRef} style={{ ...glassStyle, right: "clamp(20px, 4vw, 40px)", maxWidth: "90%", width: "auto", textAlign: "right" }}>
           <h1 ref={headingRef} style={{ fontSize: "clamp(2.5rem, 7vw, 5rem)", margin: 0, fontWeight: 800, lineHeight: 0.9, fontFamily: "'Outfit', sans-serif" }}>
@@ -539,7 +541,7 @@ const Experience = () => {
           <p ref={descriptionRef} style={{ fontSize: "1.1rem", marginTop: "20px", color: "rgba(255,255,255,0.9)", maxWidth: "400px", marginLeft: "auto", fontFamily: "'Inter', sans-serif" }}>
             NIMCET Aspirant | Practicing DSA | AI/ML BCA Student | Game Dev with Unreal Engine | Graphic Designer
           </p>
-          <button 
+          <button
             onClick={() => setIsSkills(true)}
             style={{ ...buttonStyle, marginTop: "30px" }}
             onMouseOver={btnHoverIn}
@@ -550,15 +552,15 @@ const Experience = () => {
         </div>
 
         {/* PANEL 2: Skills Nav Panel */}
-        <div ref={navPanelRef} style={{ 
-          ...glassStyle, 
-          left: "clamp(10px, 2vw, 20px)", 
-          padding: "15px", 
-          display: "none", 
-          flexDirection: "column", 
-          gap: "10px", 
-          minWidth: "150px", 
-          maxWidth: "200px", 
+        <div ref={navPanelRef} style={{
+          ...glassStyle,
+          left: "clamp(10px, 2vw, 20px)",
+          padding: "15px",
+          display: "none",
+          flexDirection: "column",
+          gap: "10px",
+          minWidth: "150px",
+          maxWidth: "200px",
           pointerEvents: "auto" // RESTORE CLICKS
         }}>
           <h2 style={{ fontSize: "1rem", margin: "0 0 5px 0", fontFamily: "'Outfit', sans-serif", fontWeight: 600, borderBottom: "1px solid rgba(255,255,255,0.1)", paddingBottom: "8px" }}>
@@ -567,7 +569,7 @@ const Experience = () => {
           <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
             {categories.map((cat, catIdx) => (
               <div key={cat} style={{ display: "flex", flexDirection: "column" }}>
-                <div 
+                <div
                   onClick={() => {
                     // Jump projectIndex to the start of this category
                     setProjectIndex(catIdx === 0 ? 0 : designProjects.length);
@@ -587,10 +589,10 @@ const Experience = () => {
                     fontFamily: "'Inter', sans-serif"
                   }}
                 >
-                  <div style={{ 
-                    width: "6px", 
-                    height: "6px", 
-                    borderRadius: "50%", 
+                  <div style={{
+                    width: "6px",
+                    height: "6px",
+                    borderRadius: "50%",
                     background: activeCategory === catIdx ? "white" : "transparent",
                     boxShadow: activeCategory === catIdx ? "0 0 10px white" : "none",
                     transition: "all 0.3s ease"
@@ -600,9 +602,9 @@ const Experience = () => {
 
                 {/* Sub-hierarchy (Project/Profile Names) */}
                 {activeCategory === catIdx && (
-                  <div style={{ 
-                    marginLeft: "24px", 
-                    marginTop: "4px", 
+                  <div style={{
+                    marginLeft: "24px",
+                    marginTop: "4px",
                     marginBottom: "8px",
                     borderLeft: "1px solid rgba(255,255,255,0.1)",
                     paddingLeft: "8px",
@@ -638,7 +640,7 @@ const Experience = () => {
               </div>
             ))}
           </div>
-          <button 
+          <button
             onClick={() => setIsSkills(false)}
             style={{ ...buttonStyle, fontSize: "0.9rem", padding: "10px 20px", marginTop: "20px", alignSelf: "flex-start" }}
             onMouseOver={btnHoverIn}
@@ -651,10 +653,10 @@ const Experience = () => {
         {/* PANEL 3: Vertical Software Corridor (Right Side) */}
         <div ref={corridorRef} className="software-corridor" style={{
           position: "fixed",
-          right: "16px", 
+          right: "16px",
           top: "0",
           height: "100%",
-          width: "170px", 
+          width: "170px",
           display: (isSkills && (activeCategory === 0 || activeCategory === 1)) ? "block" : "none",
           zIndex: 15,
           pointerEvents: "none",
@@ -681,7 +683,7 @@ const Experience = () => {
           }}>
             {fullProjectList.map((proj, i) => (
               <div key={`soft-slot-${i}`} style={{
-                height: "80vh", 
+                height: "80vh",
                 width: "100%",
                 display: "flex",
                 flexDirection: "column",
@@ -693,12 +695,12 @@ const Experience = () => {
                 transition: "all 0.6s ease"
               }}>
                 {/* Horizontal Separator (Matching Red Marks) */}
-                <div style={{ 
-                  position: "absolute", 
-                  top: 0, 
-                  width: "80%", 
-                  height: "1px", 
-                  background: "linear-gradient(to right, transparent, rgba(255,255,255,0.4), transparent)" 
+                <div style={{
+                  position: "absolute",
+                  top: 0,
+                  width: "80%",
+                  height: "1px",
+                  background: "linear-gradient(to right, transparent, rgba(255,255,255,0.4), transparent)"
                 }} />
 
                 <div style={{
@@ -730,31 +732,31 @@ const Experience = () => {
                           background: "radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, transparent 70%)" 
                         }} />
                       )} */}
-                      
-                      <img 
-                        src={softwareIconMap[sw]} 
-                        alt={sw} 
-                        style={{ 
-                          width: "60px", 
-                          height: "60px", 
+
+                      <img
+                        src={softwareIconMap[sw]}
+                        alt={sw}
+                        style={{
+                          width: "60px",
+                          height: "60px",
                           objectFit: "contain",
-                          filter:  
-                             "drop-shadow(0 0 15px white)" ,
-                            //  "opacity(1) brightness(1.2)",
+                          filter:
+                            "drop-shadow(0 0 15px white)",
+                          //  "opacity(1) brightness(1.2)",
                           transition: "all 0.6s ease"
-                        }} 
+                        }}
                       />
                     </div>
                   ))}
                 </div>
 
                 {/* Bottom Separator */}
-                <div style={{ 
-                  position: "absolute", 
-                  bottom: 0, 
-                  width: "80%", 
-                  height: "1px", 
-                  background: "linear-gradient(to right, transparent, rgba(255,255,255,0.4), transparent)" 
+                <div style={{
+                  position: "absolute",
+                  bottom: 0,
+                  width: "80%",
+                  height: "1px",
+                  background: "linear-gradient(to right, transparent, rgba(255,255,255,0.4), transparent)"
                 }} />
               </div>
             ))}
