@@ -13,8 +13,6 @@ const TransitionShader = {
     tTable: { value: null },
     tHero: { value: null },
     uProgress: { value: 0 },
-    uTableExposure: { value: 3.06 },
-    uHeroExposure: { value: 1.87 },
     uSoftness: { value: 0.1 },
     uResolution: { value: new THREE.Vector2() }
   },
@@ -29,8 +27,6 @@ const TransitionShader = {
     uniform sampler2D tTable;
     uniform sampler2D tHero;
     uniform float uProgress;
-    uniform float uTableExposure;
-    uniform float uHeroExposure;
     uniform float uSoftness;
     varying vec2 vUv;
 
@@ -41,10 +37,6 @@ const TransitionShader = {
       
       vec4 tex1 = texture2D(tTable, vUv);
       vec4 tex2 = texture2D(tHero, vUv);
-      
-      // Apply per-scene exposure multipliers
-      tex1.rgb *= uTableExposure;
-      tex2.rgb *= uHeroExposure;
       
       // Smoothstep for a soft-feathered edge
       float mask = smoothstep(threshold - uSoftness, threshold + uSoftness, strength);
@@ -60,51 +52,35 @@ const TransitionShader = {
 const TransitionRenderer = ({ progress, projectIndex }) => {
   const { camera, size } = useThree();
 
-  // 1. Two FBOs for the two scenes with proper color space
+  // 1. Single FBO for the table scene
   const fboTable = useFBO({
-    samples: 8,
-    colorSpace: THREE.SRGBColorSpace,
-  });
-  const fboHero = useFBO({
-    samples: 8,
+    samples: 4,
     colorSpace: THREE.SRGBColorSpace,
   });
 
-  // 2. Separate virtual worlds
+  // 2. Table scene world
   const sceneTable = useMemo(() => new THREE.Scene(), []);
-  const sceneHero = useMemo(() => new THREE.Scene(), []);
 
   // 3. Isolated cameras
-  const camTableBase = useMemo(() => new THREE.Vector3(-1.14, 2.5, 3.5), []);
+  const tablePos      = useMemo(() => new THREE.Vector3(-1.14, -0.61, 1.75), []); // rest position
+  const tableStartPos = useMemo(() => new THREE.Vector3(-1.14,  0.0,  3.5),  []); // entry start (zoomed out, but lower to avoid void)
+  const tableTarget   = useMemo(() => new THREE.Vector3(-0.87, -0.86, 0.65), []);
 
   const camTable = useMemo(() => {
     const c = new THREE.PerspectiveCamera(30, size.width / size.height, 0.1, 1000);
-    c.position.copy(camTableBase);
+    c.position.copy(tableStartPos); // start from entry position
+    c.lookAt(new THREE.Vector3(-0.87, -0.86, 0.65));
     return c;
-  }, [camTableBase, size.width, size.height]);
+  }, [tableStartPos, size.width, size.height]);
 
-  useEffect(() => {
-    gsap.to(camTableBase, {
-      x: -1.14,
-      y: -0.61,
-      z: 1.75, // Target resting depth
-      duration: 2.5,
-      ease: "power3.inOut",
-      delay: 1.5 // Wait for loader
-    });
-  }, [camTableBase]);
-
-  const camHero = useMemo(() => {
-    const c = new THREE.PerspectiveCamera(30, size.width / size.height, 0.1, 1000);
-    c.position.set(0, 0, 5.3);
-    return c;
-  }, []);
+  // Entry animation timer — driven inside useFrame, no GSAP
+  const entryTimer = useRef(0);
 
   // 4. Shader Material
   const material = useMemo(() => {
     const mat = new THREE.ShaderMaterial({
       ...TransitionShader,
-      transparent: true // allow FBO alphas to penetrate
+      transparent: true
     });
     mat.toneMapped = true;
     return mat;
@@ -114,9 +90,7 @@ const TransitionRenderer = ({ progress, projectIndex }) => {
     const aspect = size.width / size.height;
     camTable.aspect = aspect;
     camTable.updateProjectionMatrix();
-    camHero.aspect = aspect;
-    camHero.updateProjectionMatrix();
-  }, [size, camTable, camHero]);
+  }, [size, camTable]);
 
   // Keep display camera at origin
   useEffect(() => {
@@ -124,51 +98,65 @@ const TransitionRenderer = ({ progress, projectIndex }) => {
     camera.rotation.set(0, 0, 0);
   }, [camera]);
 
-  const { tableExposure, heroExposure, softness } = useControls("Scene Exposure", {
-    tableExposure: { value: 3.06, min: 0, max: 5, step: 0.01 },
-    heroExposure: { value: 1.87, min: 0, max: 5, step: 0.01 },
+  const { softness, parallaxStrength } = useControls("Scene Exposure", {
     softness: { value: 0.1, min: 0, max: 0.5, step: 0.01 },
+    parallaxStrength: { value: 0.06, min: 0, max: 0.3, step: 0.005 },
   });
 
-  const tableTarget = useMemo(() => new THREE.Vector3(-0.87, -0.86, 0.65), []);
+  // Global mouse tracker — works even when cursor is over HTML overlays.
+  // window mousemove fires regardless of which element is under the cursor,
+  // unlike state.pointer which stops when the canvas loses pointer events.
+  const globalMouse = useRef({ x: 0, y: 0 });
+  useEffect(() => {
+    const onMove = (e) => {
+      // Normalize to -1..+1 same as R3F state.pointer
+      globalMouse.current.x =  (e.clientX / window.innerWidth)  * 2 - 1;
+      globalMouse.current.y = -((e.clientY / window.innerHeight) * 2 - 1); // flip Y
+    };
+    window.addEventListener('mousemove', onMove);
+    return () => window.removeEventListener('mousemove', onMove);
+  }, []);
+
+  // Smoothed mouse — hides residual frame-drop snaps
+  const smoothMouse = useRef({ x: 0, y: 0 });
 
   useFrame((state, delta) => {
     material.uniforms.uProgress.value = progress.value;
-    material.uniforms.uTableExposure.value = tableExposure;
-    material.uniforms.uHeroExposure.value = heroExposure;
     material.uniforms.uSoftness.value = softness;
 
-    // --- SCENE 1 PARALLAX (Buttery Smooth) ---
-    // Frame-rate independent lerp: 1 - Math.exp(-speed * delta)
-    const smoothFactor = 1 - Math.exp(-8.0 * delta); 
+    // --- ENTRY ANIMATION + PARALLAX ---
+    const dt = Math.min(delta, 0.05);
+    const lf = 1 - Math.exp(-8.0 * dt);
 
-    const pX = state.pointer.x * 0.15;
-    const pY = state.pointer.y * 0.15;
-    
-    camTable.position.x = THREE.MathUtils.lerp(camTable.position.x, camTableBase.x + pX, smoothFactor);
-    camTable.position.y = THREE.MathUtils.lerp(camTable.position.y, camTableBase.y + pY, smoothFactor);
-    camTable.position.z = THREE.MathUtils.lerp(camTable.position.z, camTableBase.z, smoothFactor);
-    
-    // Smoothly point the camera at its target (Synchronized)
+    // Advance entry timer
+    entryTimer.current += dt;
+    const DELAY    = 0.0;
+    const DURATION = 2.5;
+    const t = Math.max(0, Math.min((entryTimer.current - DELAY) / DURATION, 1));
+    // power3.inOut easing
+    const eased = t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2;
+
+    const baseX = THREE.MathUtils.lerp(tableStartPos.x, tablePos.x, eased);
+    const baseY = THREE.MathUtils.lerp(tableStartPos.y, tablePos.y, eased);
+    const baseZ = THREE.MathUtils.lerp(tableStartPos.z, tablePos.z, eased);
+
+    // Smooth global mouse
+    smoothMouse.current.x += (globalMouse.current.x - smoothMouse.current.x) * lf;
+    smoothMouse.current.y += (globalMouse.current.y - smoothMouse.current.y) * lf;
+
+    camTable.position.set(
+      baseX + smoothMouse.current.x * parallaxStrength,
+      baseY + smoothMouse.current.y * parallaxStrength,
+      baseZ
+    );
     camTable.lookAt(tableTarget);
 
-    // --- SCENE 2 PARALLAX (Subtle) ---
-    camHero.position.x = THREE.MathUtils.lerp(camHero.position.x, 0 + pX * 0.5, smoothFactor);
-    camHero.position.y = THREE.MathUtils.lerp(camHero.position.y, 0 + pY * 0.5, smoothFactor);
-    camHero.lookAt(0, 0, 0);
-
-    // --- RENDER PASSES ---
+    // --- SINGLE RENDER PASS ---
     state.gl.setRenderTarget(fboTable);
     state.gl.render(sceneTable, camTable);
-
-    state.gl.setRenderTarget(fboHero);
-    state.gl.render(sceneHero, camHero);
-
     state.gl.setRenderTarget(null);
 
-    // Update uniforms
     material.uniforms.tTable.value = fboTable.texture;
-    material.uniforms.tHero.value = fboHero.texture;
   });
 
   const f = 2 * Math.tan((camera.fov * Math.PI) / 360);
@@ -661,7 +649,7 @@ const Experience = () => {
         </div>
 
         {/* PANEL 3: Vertical Software Corridor (Right Side) */}
-        <div ref={corridorRef} style={{
+        <div ref={corridorRef} className="software-corridor" style={{
           position: "fixed",
           right: "16px", 
           top: "0",
