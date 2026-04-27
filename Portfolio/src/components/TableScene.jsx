@@ -25,7 +25,7 @@ export default function TableScene() {
     // baked textures — zero lighting, zero env map influence.
     useEffect(() => {
         scene.traverse((child) => {
-            if (child.isMesh) {
+            if (child.isMesh && !child.userData.converted) {
                 const oldMat = child.material;
 
                 // Grab the baked colour/albedo map
@@ -34,14 +34,24 @@ export default function TableScene() {
                     map.colorSpace = THREE.SRGBColorSpace;
                 }
 
+                let materialColor = 0xffffff; // Default for basic material with map
+                if (oldMat.name === "Adhiraj") {
+                    materialColor = new THREE.Color(1.6, 1.6, 1.6);
+                } else if (oldMat.color) {
+                    materialColor = oldMat.color;
+                }
+
                 // Replace with a completely unlit material
                 child.material = new THREE.MeshBasicMaterial({
+                    name: oldMat.name,
                     map,
+                    color: materialColor,
                     transparent: oldMat.transparent ?? false,
                     alphaTest: oldMat.alphaTest ?? 0,
                     side: oldMat.side ?? THREE.FrontSide,
                 });
 
+                child.userData.converted = true;
                 // Dispose the old material to free GPU memory
                 oldMat.dispose();
             }
