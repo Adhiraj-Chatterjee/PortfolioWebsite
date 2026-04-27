@@ -189,6 +189,7 @@ const Experience = () => {
 
   const [isSkills, setIsSkills] = useState(false);
   const [projectIndex, setProjectIndex] = useState(0);
+  const [isMuted, setIsMuted] = useState(true);
 
   const categories = [
     "Design & 3D",
@@ -483,7 +484,7 @@ const Experience = () => {
                 display: "flex", justifyContent: "center", alignItems: "center"
               }}>
                 {proj.file.endsWith(".mp4") ? (
-                  <video src={proj.file} autoPlay loop muted playsInline style={{ maxHeight: "90%", maxWidth: "100%", borderRadius: "12px", boxShadow: "0 25px 50px rgba(0,0,0,0.8)" }} />
+                  <video src={proj.file} autoPlay loop muted={isMuted || projectIndex !== i} playsInline style={{ maxHeight: "90%", maxWidth: "100%", borderRadius: "12px", boxShadow: "0 25px 50px rgba(0,0,0,0.8)" }} />
                 ) : (
                   <img
                     src={proj.file}
@@ -762,6 +763,44 @@ const Experience = () => {
             ))}
           </div>
         </div>
+
+        {/* PANEL 4: Mute Toggle Button */}
+        {isSkills && fullProjectList[projectIndex]?.file?.endsWith(".mp4") && (
+          <button
+            onClick={() => setIsMuted(!isMuted)}
+            style={{
+              position: "fixed",
+              bottom: "40px",
+              right: "200px", // Positioned to the left of the vertical corridor
+              zIndex: 20,
+              padding: "12px 16px",
+              borderRadius: "30px",
+              background: "rgba(255,255,255,0.1)",
+              border: "1px solid rgba(255,255,255,0.2)",
+              color: "white",
+              fontSize: "1rem",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              cursor: "pointer",
+              pointerEvents: "auto",
+              boxShadow: "0 4px 15px rgba(0,0,0,0.5)",
+              backdropFilter: "blur(10px)",
+              transition: "all 0.3s ease",
+              fontFamily: "'Inter', sans-serif"
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.background = "rgba(255,255,255,0.2)";
+              e.currentTarget.style.transform = "scale(1.05)";
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.background = "rgba(255,255,255,0.1)";
+              e.currentTarget.style.transform = "scale(1)";
+            }}
+          >
+            {isMuted ? "🔇 Unmute Video" : "🔊 Mute Video"}
+          </button>
+        )}
 
       </div>
     </div>
